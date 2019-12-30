@@ -1,0 +1,1 @@
+sam deploy --stack-name <stack-name> --s3-bucket <s3-bucket-name> --s3-prefix <s3-bucket-prefix> --capabilities CAPABILITY_IAM
