@@ -1,5 +1,18 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
+
+Description: Orphaned Log Groups Collector deletes log groups not associated with any resources in the AWS Account.
+
+Parameters:
+  SchedulerCronParameter:
+    Type: String
+    Description: Enter scheduler cron expresion. Default is cron(0 0 1 * ? *).
+    Default: cron(0 0 1 * ? *)
+  SchedulerEnabledParameter:
+    Type: String
+    Description: Enable scheduler. Default is ENABLED.
+    Default: DISABLED
+    AllowedValues: [ENABLED, DISABLED]
 
 Resources:
   OrphanedLogGroupsCollector:
@@ -11,6 +24,16 @@ Resources:
       Runtime: python3.7
       Timeout: 900
       Tracing: Active
+      # SAM not used because of a bug in Enabled: !Ref SchedulerEnabledParameter - https://github.com/awslabs/serverless-application-model/issues/1360
+      #      Events:
+      #        Schedule:
+      #          Type: Schedule
+      #          Properties:
+      #            Name: MonthlyScheduler
+      #            Description: Monthly scheduler
+      #            Enabled: !Ref SchedulerEnabledParameter
+      #            Schedule: !Ref SchedulerCronParameter
+      #            Input: '{"view_only": false}'
       Policies:
         - AWSLambdaBasicExecutionRole
         - Version: 2012-10-17
@@ -23,3 +46,21 @@ Resources:
                 - lambda:ListFunctions
                 - apigateway:GET
               Resource: '*'
+
+  MonthlyScheduler:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Monthly scheduler
+      ScheduleExpression: !Ref SchedulerCronParameter
+      State: !Ref SchedulerEnabledParameter
+      Targets:
+        - Id: MonthlyScheduler
+          Arn: !GetAtt OrphanedLogGroupsCollector.Arn
+          Input: '{"view_only": false}'
+  MonthlySchedulerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref OrphanedLogGroupsCollector
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt MonthlyScheduler.Arn

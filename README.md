@@ -24,7 +24,7 @@ Then run the file.
 ### Input Lambda Event
 ```json
 {
-    "view_only": "true|false",   
+    "view_only": true,
     "regions": ["us-west-1", "..."]
 }
 ```
@@ -33,3 +33,10 @@ Then run the file.
 - regions: all regions
 
 # **It is strongly recommended to use view_only mode first!!**
+
+## Scheduler
+Orphaned Log Groups Collector by default is scheduled every first day of the month. 
+
+The schedule can be changed by overriding `SchedulerCronParameter`.
+
+The scheduler can be disabled using `SchedulerEnabledParameter`.

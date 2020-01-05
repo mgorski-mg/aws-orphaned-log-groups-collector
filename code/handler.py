@@ -4,7 +4,7 @@ from engines.lambda_engine import LambdaEngine
 from engines.apigateway_engine import ApigatewayEngine
 
 
-def lambda_handler(event):
+def lambda_handler(event, context):
     view_only = get_view_only_parameter(event)
     regions = get_regions_parameter(event)
 
@@ -45,7 +45,7 @@ def get_view_only_parameter(event):
     if 'view_only' not in event:
         return 1
     else:
-        return event['view_only'].lower() == 'true'
+        return event['view_only']
 
 
 def get_regions_parameter(event):
