@@ -21,7 +21,7 @@ Resources:
       Description: Delete orphaned log groups
       CodeUri: code/
       Handler: handler.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.8
       Timeout: 900
       Tracing: Active
       # SAM not used because of a bug in Enabled: !Ref SchedulerEnabledParameter - https://github.com/awslabs/serverless-application-model/issues/1360
@@ -29,11 +29,11 @@ Resources:
       #        Schedule:
       #          Type: Schedule
       #          Properties:
-      #            Name: MonthlyScheduler
-      #            Description: Monthly scheduler
+      #            Name: Scheduler
+      #            Description: Scheduler
       #            Enabled: !Ref SchedulerEnabledParameter
       #            Schedule: !Ref SchedulerCronParameter
-      #            Input: '{"view_only": false}'
+      #            Input: '{"dry_run": false}'
       Policies:
         - AWSLambdaBasicExecutionRole
         - Version: 2012-10-17
@@ -47,20 +47,20 @@ Resources:
                 - apigateway:GET
               Resource: '*'
 
-  MonthlyScheduler:
+  Scheduler:
     Type: AWS::Events::Rule
     Properties:
-      Description: Monthly scheduler
       ScheduleExpression: !Ref SchedulerCronParameter
       State: !Ref SchedulerEnabledParameter
       Targets:
-        - Id: MonthlyScheduler
+        - Id: Scheduler
           Arn: !GetAtt OrphanedLogGroupsCollector.Arn
-          Input: '{"view_only": false}'
-  MonthlySchedulerPermission:
+          Input: '{"dry_run": false}'
+
+  SchedulerPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref OrphanedLogGroupsCollector
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
-      SourceArn: !GetAtt MonthlyScheduler.Arn
+      SourceArn: !GetAtt Scheduler.Arn
