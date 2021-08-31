@@ -1,7 +1,20 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 
-Description: Orphaned Log Groups Collector deletes log groups not associated with any resources in the AWS Account.
+Description: Orphaned Log Groups Collector deletes AWS Lambda related log groups not associated with any AWS Lambda in the AWS Account.
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: orphaned-log-groups-collector
+    Description: Orphaned Log Groups Collector deletes AWS Lambda related log groups not associated with any AWS Lambda in the AWS Account.
+    Author: Michal Gorski
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['lambda','cloudwatch','cron']
+    HomePageUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
+    SemanticVersion: 2.0.0
+    SourceCodeUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
 
 Parameters:
   SchedulerCronParameter:

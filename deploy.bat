@@ -1,1 +1,1 @@
-sam deploy --stack-name <stack-name> --s3-bucket <s3-bucket-name> --s3-prefix <s3-bucket-prefix> --capabilities CAPABILITY_IAM --parameter-overrides SchedulerEnabledParameter=DISABLED
+sam deploy --stack-name orphaned-log-groups-collector --s3-bucket <s3-bucket-name> --s3-prefix orphaned-log-groups-collector --capabilities CAPABILITY_IAM --parameter-overrides SchedulerEnabledParameter=DISABLED
