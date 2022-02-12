@@ -13,7 +13,7 @@ Metadata:
     ReadmeUrl: README.md
     Labels: ['lambda','cloudwatch','cron']
     HomePageUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
-    SemanticVersion: 2.0.0
+    SemanticVersion: 2.0.1
     SourceCodeUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
 
 Parameters:
@@ -57,7 +57,6 @@ Resources:
                 - logs:DescribeLogGroups
                 - logs:DeleteLogGroup
                 - lambda:ListFunctions
-                - apigateway:GET
               Resource: '*'
 
   Scheduler:
