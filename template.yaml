@@ -11,9 +11,9 @@ Metadata:
     SpdxLicenseId: Apache-2.0
     LicenseUrl: LICENSE
     ReadmeUrl: README.md
-    Labels: ['lambda','cloudwatch','cron']
+    Labels: [ 'lambda','cloudwatch','cron' ]
     HomePageUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
-    SemanticVersion: 2.0.1
+    SemanticVersion: 2.0.2
     SourceCodeUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
 
 Parameters:
@@ -25,7 +25,7 @@ Parameters:
     Type: String
     Description: Enable scheduler. Default is ENABLED.
     Default: DISABLED
-    AllowedValues: [ENABLED, DISABLED]
+    AllowedValues: [ ENABLED, DISABLED ]
 
 Resources:
   OrphanedLogGroupsCollector:
@@ -58,6 +58,12 @@ Resources:
                 - logs:DeleteLogGroup
                 - lambda:ListFunctions
               Resource: '*'
+
+  OrphanedLogGroupsCollectorLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${OrphanedLogGroupsCollector}
+      RetentionInDays: 180
 
   Scheduler:
     Type: AWS::Events::Rule
