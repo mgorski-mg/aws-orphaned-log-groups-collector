@@ -11,7 +11,7 @@ Deleting AWS resources even using CloudFormation does not delete the correspondi
 
 ## Getting Started
 ### Prerequisites
-- Python 3.8+
+- Python 3.9+
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 
 ### Deployment
