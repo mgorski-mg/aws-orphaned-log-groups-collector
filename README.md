@@ -1,5 +1,5 @@
-# AWS Lambda Orphaned Log Groups Collector
-Orphaned Log Groups Collector deletes AWS Lambda related log groups not associated with any AWS Lambda in the AWS Account.
+# AWS Orphaned Log Groups Collector
+Orphaned Log Groups Collector deletes AWS Lambda and Amazon RDS related log groups not associated with any resources in the AWS Account.
 
 Available on the [AWS Serverless Application Repository](https://aws.amazon.com/serverless) - [orphaned-log-groups-collector](https://eu-west-1.console.aws.amazon.com/lambda/home?region=eu-west-1#/create/app?applicationId=arn:aws:serverlessrepo:eu-west-1:275418140668:applications/orphaned-log-groups-collector)
 
@@ -8,6 +8,7 @@ Deleting AWS resources even using CloudFormation does not delete the correspondi
 
 ### Supported services
 - AWS Lambda
+- Amazon RDS
 
 ## Getting Started
 ### Prerequisites

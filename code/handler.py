@@ -1,6 +1,7 @@
 import json
 import boto3
 from engines.lambda_engine import LambdaEngine
+from engines.rds_engine import RdsEngine
 
 
 def lambda_handler(event, context):
@@ -16,6 +17,7 @@ def lambda_handler(event, context):
 
 def find_orphans(region, logs_client):
     lambda_engine = LambdaEngine(region)
+    rds_engine = RdsEngine(region)
 
     orphaned_log_groups = []
 
@@ -23,7 +25,7 @@ def find_orphans(region, logs_client):
     for response in paginator.paginate():
         for log_group in response.get('logGroups'):
             log_group_name = log_group['logGroupName']
-            if lambda_engine.is_orphan(log_group_name):
+            if lambda_engine.is_orphan(log_group_name) or rds_engine.is_orphan(log_group_name):
                 orphaned_log_groups.append(log_group)
 
     return orphaned_log_groups
