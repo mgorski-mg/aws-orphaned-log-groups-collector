@@ -12,7 +12,7 @@ Metadata:
     ReadmeUrl: README.md
     Labels: [ 'lambda','rds','cloudwatch','cron' ]
     HomePageUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
-    SemanticVersion: 2.1.0
+    SemanticVersion: 2.1.1
     SourceCodeUrl: https://github.com/mgorski-mg/aws-orphaned-log-groups-collector
 
 Parameters:
@@ -23,7 +23,7 @@ Parameters:
   SchedulerEnabledParameter:
     Type: String
     Description: Enable scheduler. Default is ENABLED.
-    Default: DISABLED
+    Default: ENABLED
     AllowedValues: [ ENABLED, DISABLED ]
 
 Resources:
@@ -39,16 +39,13 @@ Resources:
       Tracing: Active
       Architectures:
         - arm64
-      # SAM not used because of a bug in Enabled: !Ref SchedulerEnabledParameter - https://github.com/awslabs/serverless-application-model/issues/1360
-      #      Events:
-      #        Schedule:
-      #          Type: Schedule
-      #          Properties:
-      #            Name: Scheduler
-      #            Description: Scheduler
-      #            Enabled: !Ref SchedulerEnabledParameter
-      #            Schedule: !Ref SchedulerCronParameter
-      #            Input: '{"dry_run": false}'
+      Events:
+        Schedule:
+          Type: Schedule
+          Properties:
+            State: !Ref SchedulerEnabledParameter
+            Schedule: !Ref SchedulerCronParameter
+            Input: '{"dry_run": false}'
       Policies:
         - AWSLambdaBasicExecutionRole
         - Version: 2012-10-17
@@ -67,21 +64,3 @@ Resources:
     Properties:
       LogGroupName: !Sub /aws/lambda/${OrphanedLogGroupsCollector}
       RetentionInDays: 180
-
-  Scheduler:
-    Type: AWS::Events::Rule
-    Properties:
-      ScheduleExpression: !Ref SchedulerCronParameter
-      State: !Ref SchedulerEnabledParameter
-      Targets:
-        - Id: Scheduler
-          Arn: !GetAtt OrphanedLogGroupsCollector.Arn
-          Input: '{"dry_run": false}'
-
-  SchedulerPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      FunctionName: !Ref OrphanedLogGroupsCollector
-      Action: lambda:InvokeFunction
-      Principal: events.amazonaws.com
-      SourceArn: !GetAtt Scheduler.Arn
